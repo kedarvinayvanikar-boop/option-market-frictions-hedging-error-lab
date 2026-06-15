@@ -173,7 +173,7 @@ flowchart TD
 ├── tests/                       pytest suite for src/ and the C bindings
 ├── figures/                     30 result figures (PNG)
 ├── reports/
-│   └── figures_gallery.md      Phase 23: all 17 key figures with captions
+│   └── figures_gallery.md      all 17 key figures with captions
 │
 ├── dashboard/                   Vite + React interactive dashboard
 │   ├── src/FrictionsLabDashboard.jsx
