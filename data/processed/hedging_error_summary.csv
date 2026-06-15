@@ -1,0 +1,10 @@
+metric,value
+path_count,5000.0
+mean_hedging_error,-0.12747452371773674
+std_hedging_error,0.4506154074319096
+p05_hedging_error,-0.8550079169819931
+p50_hedging_error,-0.13001029097478778
+p95_hedging_error,0.617388204353798
+mean_abs_hedging_error,0.35797371243099235
+average_transaction_cost,0.13869886122191571
+average_rebalance_count,30.8032

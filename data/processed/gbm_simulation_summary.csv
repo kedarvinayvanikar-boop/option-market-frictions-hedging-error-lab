@@ -1,0 +1,15 @@
+metric,value
+num_paths,2000.0
+num_steps,30.0
+starting_price,100.0
+mean_final_price,100.43538397521166
+median_final_price,100.25566880262176
+std_final_price,7.043887147009763
+min_final_price,82.16513078871509
+max_final_price,128.65268454828637
+p05_final_price,89.21177326513912
+p95_final_price,111.82639063868739
+mean_total_return,0.0043538397521166085
+median_total_return,0.0025566880262176683
+p05_total_return,-0.10788226734860876
+p95_total_return,0.11826390638687384

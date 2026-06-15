@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile C kernels
+        run: |
+          mkdir -p compiled
+          gcc -shared -fPIC c_src/example_add.c -o compiled/libexample_add.so
+          gcc -O3 -fPIC -shared c_src/normal_math.c c_src/bs_pricer.c c_src/iv_solver.c c_src/greeks_kernel.c -o compiled/libbs_pricer.so -lm
+          gcc -O3 -fPIC -shared c_src/monte_carlo.c -o compiled/libmonte_carlo.so -lm
+
+      - name: Run test suite
+        run: pytest -q
+
+      - name: Run pipeline end-to-end
+        run: python3 main.py

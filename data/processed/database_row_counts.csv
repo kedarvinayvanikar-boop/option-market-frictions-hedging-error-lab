@@ -1,0 +1,13 @@
+table_name,row_count
+snapshots,1
+option_quotes_raw,42
+option_quotes_clean,42
+quote_quality_summary,6
+iv_results,0
+iv_uncertainty_results,0
+greek_results,0
+greek_uncertainty_results,0
+surface_diagnostics,0
+hedge_runs,0
+hedge_results,0
+scenario_results,0

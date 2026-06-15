@@ -1,0 +1,9 @@
+metric,value
+total_contracts,42.0
+retained_contracts,37.0
+excluded_contracts,5.0
+excluded_share,0.11904761904761904
+unique_expiries,3.0
+median_spread_pct_retained,0.08816855753646685
+mean_spread_pct_retained,0.08047328244106972
+median_days_to_expiry_retained,35.333321759259256
