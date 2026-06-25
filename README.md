@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 ![Tests](https://img.shields.io/badge/tests-54%20passing-brightgreen)
 ![C](https://img.shields.io/badge/kernels-C%20%2B%20ctypes-lightgrey)
-![CI](https://github.com/kedarvinayvanikar-boop/option-market-frictions-hedging-error-lab/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/kedarvinayvanikar-boop/option-market-frictions-hedging-error-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/kedarvinayvanikar-boop/option-market-frictions-hedging-error-lab/actions/workflows/ci.yml)
 
 A reproducible risk-measurement lab that quantifies how **bid-ask spreads, quote liquidity, short expiry, and transaction costs** distort implied volatility, option Greeks, and discrete delta-hedging performance for SPY options — built end to end in **Python, SQL, and C**, with an interactive React dashboard.
 
@@ -30,6 +30,34 @@ A reproducible risk-measurement lab that quantifies how **bid-ask spreads, quote
 ![Hedge frequency cost-risk frontier](figures/hedge_frequency_cost_frontier.png)
 
 **All 16 result figures, with captions and interpretation, are in [`reports/figures_gallery.md`](reports/figures_gallery.md).**
+
+---
+
+## Methodology
+
+The analysis runs in ten sequential stages:
+
+1. **Quote cleaning** — five filters (zero bid, crossed market, missing bid/ask, spread > 40% of mid, zero volume/open interest) are applied to the raw 42-contract snapshot. Each excluded contract and its reason are retained and reported.
+2. **Implied volatility** — Black-Scholes IV is solved three times per contract (from bid, mid, and ask price) using a bracketing bisection root-finder, producing an IV interval rather than a single midpoint estimate.
+3. **IV uncertainty** — the relative range (ask IV − bid IV) / mid IV is computed per contract and binned by moneyness and days-to-expiry to show where quote-driven uncertainty is largest.
+4. **Volatility surface** — bid, mid, and ask surfaces are built from the three IV sets. A weighted reliability score (retention rate, IV completion rate, spread tightness, IV uncertainty) summarizes each expiry/option-type slice on a 0–1 scale.
+5. **Greeks and Greek uncertainty** — Delta, Gamma, Vega (ν), Theta, and Rho are computed from Black-Scholes at each of the three IV inputs. The range across bid-IV, mid-IV, and ask-IV Greeks measures how much quote friction distorts each sensitivity.
+6. **Short-expiry risk** — contracts are grouped into DTE buckets (8–14 days, 31–60 days) to compare how Gamma and Theta scale as expiry approaches, tracing the acceleration directly to the 1/√T factor in the Theta formula.
+7. **GBM simulation** — 3,000 geometric Brownian motion price paths are generated (S₀ = K = 100, σ = 0.20, T = 30 days, daily steps) as a controlled environment where the true volatility is known by construction.
+8. **Delta-hedging simulation** — a synthetic ATM call is delta-hedged across all 3,000 paths under five rules: no hedge, weekly, every 2 days, daily, and event-triggered (rebalance when |ΔDelta| > 0.05).
+9. **Transaction-cost modeling** — rebalancing costs are applied at 0, 1, 5, and 10 basis points per trade, giving a 20-scenario grid.
+10. **Scenario analysis** — mean error, standard deviation, mean absolute error, and tail percentiles are reported across all 20 scenarios to show the frequency-cost tradeoff.
+
+---
+
+## Conclusions
+
+- **Spread variation is moneyness-driven, not expiry-driven.** Median bid-ask spread is nearly identical across all three expiries (~8.8%), but widens significantly toward both wings of the moneyness distribution, reaching 12%+ for the most out-of-the-money strikes.
+- **Midpoint IV overstates precision.** The median IV relative range across retained contracts is 5.73%, meaning a single midpoint IV figure conceals a bid-to-ask volatility interval that is material for risk reporting and model validation.
+- **Greek uncertainty is concentrated in near-dated, out-of-the-money contracts.** The maximum Delta uncertainty reaches 0.1172 and the maximum Theta uncertainty reaches 350.60, both in the June 2026 far-OTM put slice — the same region where Gamma is most sensitive to small price moves.
+- **Theta accelerates nonlinearly as expiry approaches.** Median absolute Theta is 2.8× higher in the 8–14 DTE bucket than in the 31–60 DTE bucket for calls, consistent with the 1/√T scaling in the Black-Scholes Theta formula.
+- **Hedge frequency dominates transaction cost as a risk driver.** Across the 20-scenario grid, moving from no hedge to daily rebalancing reduces error standard deviation from 4.45 to 0.46 — a 90% reduction. Increasing transaction costs from 0 to 10 bps shifts mean error by only ~0.10, a secondary effect by comparison.
+- **Event-triggered hedging offers a practical middle ground.** With an average of ~9 rebalances per path versus ~31 for daily, event-triggered hedging achieves a mean absolute error of 0.439 at 0 bps versus 0.345 for daily — meaningfully tighter than weekly (0.735) at roughly a third of the trading cost of daily.
 
 ---
 
